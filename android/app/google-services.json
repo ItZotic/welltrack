@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "518485348258",
+    "project_id": "welltrack-de646",
+    "storage_bucket": "welltrack-de646.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518485348258:android:498ee5adc6182891332cfb",
+        "android_client_info": {
+          "package_name": "com.example.welltrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2dRBls8uDZTjom3OsDTcouUD3nVhV8-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
