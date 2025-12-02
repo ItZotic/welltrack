@@ -206,18 +206,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
                           decoration: _fieldDecoration(
                             label: 'Email',
                             hint: 'you@example.com',
                             icon: Icons.email_outlined,
                           ),
                           validator: (value) {
-                            final email = (value ?? '').trim();
-                            if (email.isEmpty) {
-                              return 'Email is required.';
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email address.';
                             }
-                            if (!isValidEmail(email)) {
+                            if (!RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+                                .hasMatch(value)) {
                               return 'Please enter a valid email address.';
                             }
                             return null;
