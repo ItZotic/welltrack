@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -24,8 +25,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'WellTrack: Student Wellness Companion',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
+        textTheme: Theme.of(context).textTheme.apply(
+              bodyColor: Colors.black87,
+              displayColor: Colors.black87,
+            ),
       ),
       debugShowCheckedModeBanner: false,
       home: const AuthGate(),
