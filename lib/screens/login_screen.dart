@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
+    FocusScope.of(context).unfocus();
     setState(() {
       _errorMessage = null;
       _isLoading = true;
@@ -41,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
         message = 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
         message = 'Incorrect password. Please try again.';
+      } else if (e.code == 'invalid-email') {
+        message = 'Please enter a valid email address.';
       } else {
         message = e.message ?? 'Login failed. Please try again.';
       }
@@ -72,12 +75,12 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Welcome back!',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                const Text('Log in to continue your wellness journey.'),
+              const Text(
+                'Welcome back!',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text('Log in to continue your wellness journey.'),
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: _emailController,
@@ -87,7 +90,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty || !value.contains('@')) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email address.';
+                    }
+                    if (!RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+\$').hasMatch(value)) {
                       return 'Please enter a valid email address.';
                     }
                     return null;
@@ -104,6 +110,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password.';
+                    }
+                    if (value.length < 6) {
+                      return 'Password should be at least 6 characters.';
                     }
                     return null;
                   },

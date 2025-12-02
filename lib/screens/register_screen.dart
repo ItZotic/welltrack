@@ -13,7 +13,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _contactController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _wellnessGoalController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   String? _errorMessage;
@@ -23,13 +25,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _contactController.dispose();
+    _confirmPasswordController.dispose();
+    _wellnessGoalController.dispose();
     super.dispose();
   }
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
 
+    FocusScope.of(context).unfocus();
     setState(() {
       _errorMessage = null;
       _isLoading = true;
@@ -46,9 +50,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'fullName': _fullNameController.text.trim(),
         'email': _emailController.text.trim(),
-        'contact': _contactController.text.trim(),
+        'wellnessGoal': _wellnessGoalController.text.trim(),
         'createdAt': FieldValue.serverTimestamp(),
       });
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
     } on FirebaseAuthException catch (e) {
       String message;
       if (e.code == 'email-already-in-use') {
@@ -75,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Account')),
+      appBar: AppBar(title: const Text('Create WellTrack Account')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -114,7 +122,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty || !value.contains('@')) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email address.';
+                    }
+                    if (!RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+\$')
+                        .hasMatch(value)) {
                       return 'Please enter a valid email address.';
                     }
                     return null;
@@ -137,9 +149,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  controller: _contactController,
+                  controller: _confirmPasswordController,
+                  obscureText: true,
                   decoration: const InputDecoration(
-                    labelText: 'Contact (optional)',
+                    labelText: 'Confirm Password',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password.';
+                    }
+                    if (value != _passwordController.text) {
+                      return 'Passwords do not match.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _wellnessGoalController,
+                  decoration: const InputDecoration(
+                    labelText: 'Wellness Goal (e.g., Stress, Sleep)',
                     border: OutlineInputBorder(),
                   ),
                 ),
