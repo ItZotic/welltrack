@@ -57,7 +57,6 @@ class HomeScreen extends StatelessWidget {
 
           final data = snapshot.data!.data() ?? {};
           final fullName = data['fullName'] ?? 'Student';
-          final wellnessGoal = (data['wellnessGoal'] ?? '').toString().trim();
 
           return SafeArea(
             child: SingleChildScrollView(
@@ -73,11 +72,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    wellnessGoal.isEmpty
-                        ? 'Your wellness focus: Add a goal to stay mindful.'
-                        : 'Your wellness focus: $wellnessGoal',
-                    style: const TextStyle(fontSize: 16, color: Colors.black54),
+                  const Text(
+                    'We are glad you are here. Keep tracking your habits and moods to stay aligned with your well-being.',
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                   const SizedBox(height: 24),
                   Card(
