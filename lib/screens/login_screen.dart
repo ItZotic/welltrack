@@ -34,10 +34,17 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: email,
+        password: password,
       );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       String message;
       if (e.code == 'user-not-found') {
@@ -50,9 +57,18 @@ class _LoginScreenState extends State<LoginScreen> {
         message = e.message ?? 'Login failed. Please try again.';
       }
 
-      setState(() => _errorMessage = message);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(message)));
+        setState(() => _errorMessage = message);
+      }
     } catch (e) {
-      setState(() => _errorMessage = 'Something went wrong. Please try again.');
+      const message = 'Something went wrong. Please try again.';
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text(message)));
+        setState(() => _errorMessage = message);
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
