@@ -25,8 +25,45 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'WellTrack: Student Wellness Companion',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
+        primaryColor: const Color(0xFF2E7D32),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green).copyWith(
+          primary: const Color(0xFF2E7D32),
+          secondary: const Color(0xFF66BB6A),
+          surface: Colors.white,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF5FFF8),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF2E7D32),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+            textStyle: const TextStyle(fontWeight: FontWeight.w600),
+            elevation: 2,
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: const Color(0xFF2E7D32),
+            textStyle: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.green[50],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFF2E7D32), width: 1.5),
+          ),
+          labelStyle: const TextStyle(color: Colors.black87),
+        ),
         textTheme: Theme.of(context).textTheme.apply(
               bodyColor: Colors.black87,
               displayColor: Colors.black87,
