@@ -20,6 +20,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  bool _isValidEmail(String email) {
+    return email.contains('@') && email.contains('.');
+  }
+
   @override
   void dispose() {
     _fullNameController.dispose();
@@ -117,6 +121,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
