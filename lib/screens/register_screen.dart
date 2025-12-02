@@ -1,8 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/validation.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -31,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
     FocusScope.of(context).unfocus();
     setState(() {
@@ -46,8 +47,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: _passwordController.text.trim(),
       );
 
-      final uid = credential.user!.uid;
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      final user = credential.user;
+      if (user == null) {
+        throw Exception('Registration failed. Please try again.');
+      }
+
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'fullName': _fullNameController.text.trim(),
         'email': _emailController.text.trim(),
         'createdAt': FieldValue.serverTimestamp(),
@@ -60,14 +65,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
       String message;
       if (e.code == 'email-already-in-use') {
         message = 'An account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        message = 'The email address is not valid.';
       } else if (e.code == 'weak-password') {
         message = 'Password should be at least 6 characters.';
       } else {
-        message = e.message ?? 'Registration failed. Please try again.';
+       message = 'Registration failed. Please try again.';
       }
-      setState(() => _errorMessage = message);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(message)));
+        setState(() => _errorMessage = message);
+      }
     } catch (e) {
-      setState(() => _errorMessage = 'Something went wrong. Please try again.');
+      const message = 'Something went wrong. Please try again later.';
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text(message)));
+        setState(() => _errorMessage = message);
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -79,6 +95,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.pushReplacementNamed(context, '/login');
   }
 
+ bool _isValidEmail(String email) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+  }
   InputDecoration _fieldDecoration({
     required String label,
     required String hint,
@@ -235,8 +254,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             icon: Icons.person_outline,
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your full name.';
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Full name is required.';
                             }
                             return null;
                           },
@@ -252,11 +271,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             icon: Icons.email_outlined,
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email address.';
+                            final email = (value ?? '').trim();
+                            if (email.isEmpty) {
+                              return 'Email is required.';
                             }
-                            if (!RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
-                                .hasMatch(value)) {
+                            if (!_isValidEmail(email)) {
                               return 'Please enter a valid email address.';
                             }
                             return null;
@@ -272,8 +291,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             icon: Icons.lock_outline,
                           ),
                           validator: (value) {
-                            if (value == null || value.length < 6) {
-                              return 'Password should be at least 6 characters.';
+                             if (value == null || value.isEmpty) {
+                              return 'Password is required.';
+                            }
+                            if (value.length < 6) {
+                              return 'Password must be at least 6 characters.';
                             }
                             return null;
                           },
