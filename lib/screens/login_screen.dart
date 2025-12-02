@@ -64,6 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushReplacementNamed(context, '/register');
   }
 
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+  }
+
   InputDecoration _fieldDecoration({
     required String label,
     required String hint,
@@ -212,11 +216,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             icon: Icons.email_outlined,
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            final email = (value ?? '').trim();
+                            if (email.isEmpty) {
                               return 'Please enter your email address.';
                             }
-                            if (!RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
-                                .hasMatch(value)) {
+                            if (!_isValidEmail(email)) {
                               return 'Please enter a valid email address.';
                             }
                             return null;
