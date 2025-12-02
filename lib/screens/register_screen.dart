@@ -127,10 +127,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Email is required.';
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email address.';
                     }
-                    if (!_isValidEmail(value.trim())) {
+                    if (!RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+\$')
+                        .hasMatch(value)) {
                       return 'Please enter a valid email address.';
                     }
                     return null;
