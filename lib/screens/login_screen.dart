@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/validation.dart';
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -62,6 +60,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _navigateToRegister() {
     Navigator.pushReplacementNamed(context, '/register');
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
   }
 
   InputDecoration _fieldDecoration({
@@ -212,11 +214,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             icon: Icons.email_outlined,
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            final email = (value ?? '').trim();
+                            if (email.isEmpty) {
                               return 'Please enter your email address.';
                             }
-                            if (!RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
-                                .hasMatch(value)) {
+                            if (!_isValidEmail(email)) {
                               return 'Please enter a valid email address.';
                             }
                             return null;
