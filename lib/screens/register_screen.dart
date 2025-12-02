@@ -1,6 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -67,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else if (e.code == 'weak-password') {
         message = 'Password should be at least 6 characters.';
       } else {
-        message = 'Registration failed. Please try again.';
+       message = 'Registration failed. Please try again.';
       }
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -92,10 +95,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.pushReplacementNamed(context, '/login');
   }
 
-  bool _isValidEmail(String email) {
+ bool _isValidEmail(String email) {
     return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
   }
-
   InputDecoration _fieldDecoration({
     required String label,
     required String hint,
@@ -289,7 +291,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             icon: Icons.lock_outline,
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                             if (value == null || value.isEmpty) {
                               return 'Password is required.';
                             }
                             if (value.length < 6) {
